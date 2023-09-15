@@ -140,7 +140,13 @@ def generate_BC(n, delta):
     B_coeffs, C_coeffs = approximate_taylor_polynomial(B, 0, n, 1 - delta), approximate_taylor_polynomial(C, 0, n-1, 1 - delta)
     return np.polynomial.Polynomial(B_coeffs.coeffs[::-1]), np.polynomial.Polynomial(C_coeffs.coeffs[::-1])
 
-BB, CC = lambda x : B(B(x)), lambda x : C(C(x))
+def BB(x):
+    # The fourth angle function
+    return np.sqrt(0.5 + 0.5 * B(x))
+
+def CC(x):
+    # The other fourth angle function
+    return 0.0
 
 def generate_BBCC(n, delta):
     # Generates the Taylor approximations
