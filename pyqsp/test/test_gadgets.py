@@ -16,6 +16,11 @@ class Test_gadgets(unittest.TestCase):
         g = iX_Gate()
         assert g is not None
 
+    def test_gadget_unitary_dims(self):
+        G = AtomicGadget([[0, np.pi/4, -np.pi/4, 0]], [[0, 0, 0]], label="G")
+        U = G.get_qsp_unitary(("G",0))({('G',0): 0.2})
+        assert U.shape==(2,2)
+
     def test_cubic_gadget(self):
         '''
         Test cubic polynomial p(x) = x**3 as a gadget
