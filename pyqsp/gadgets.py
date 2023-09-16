@@ -209,7 +209,10 @@ class AtomicGadget(Gadget):
         gadget
         """
         seq = self.get_sequence(label, correction=correction)
-        ancilla_reg = list(range(self.depth-1))
+        if correction is None:
+            ancilla_reg = []
+        else:
+            ancilla_reg = list(range(self.depth))
         N = len(ancilla_reg) + 1
         dim = 2 ** N
 
