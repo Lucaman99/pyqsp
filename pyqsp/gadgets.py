@@ -209,8 +209,8 @@ class AtomicGadget(Gadget):
         gadget
         """
         seq = self.get_sequence(label, correction=correction)
-        ancilla_reg = list(range(self.depth))
-        N = 2 * len(ancilla_reg) + 1
+        ancilla_reg = list(range(self.depth-1))
+        N = len(ancilla_reg) + 1
         dim = 2 ** N
 
         def func(U):
