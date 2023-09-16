@@ -163,7 +163,36 @@ class Test_gadgets(unittest.TestCase):
         idx = np.where(abs(X) < 0.8)
         error = (Y[idx]-(-phi*2)).mean()
         print(error)        
+
+    def test_extraction_gadget3_for_pi4(self):
+        '''
+        Extract phase of pi/4 gadget, which is analytically known, and can also be tested
+        explicitly and compared to the arg phase of the off-digaonal element of the pi/4
+        gadget.  If this extraction works, and has all the right signs, then hopefully
+        the correction gadget should also work.
+        '''
+        # extract phase of pi/4 gadget
+        G = AtomicGadget([[0, np.pi/4, -np.pi/4, 0]], [[0, 0, 0]], label="G")
+        G_ext = ExtractionGadget(32, "G_ext")
+        G_int = G.interlink(G_ext, [(('G', 0), ('G_ext', 0), None)])
+        prefactor2 = (np.kron(np.array([[0, 1], [1, 0]]), np.eye(2)))
+        fn = lambda x : (-prefactor2 @ G_int.get_qsp_unitary(("G_ext", 0))({('G', 0) : x}))[0][0]
+        assert fn(0.2) is not None        
+
+        X = np.linspace(-1, 1, 50)
+        Y = np.array([np.angle(fn(x)) for x in X])
+        # plt.plot(X,Y)
         
+        fn = lambda x: (G.get_qsp_unitary(("G",0))({('G',0): x}) )[0][1]
+        X = np.linspace(-1, 1, 50)
+        Y2 = np.array([np.angle(fn(x)) for x in X])
+        # plt.plot(X,Y2)
+        # plt.plot(X,-Y )
+        # idx = np.where(abs(X) < 0.8)
+        idx = np.where(abs(X)<0.8)
+        error = abs(Y2-(-Y))[idx].mean()
+        assert error < 1.0e-2
+
     def test_sqrt_gadget1(self):
         '''
         Test the SQRT gadget, which is used to perform a sqrt of a unitary.
